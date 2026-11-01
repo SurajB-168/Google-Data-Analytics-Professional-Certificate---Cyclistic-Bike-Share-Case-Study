@@ -1,115 +1,92 @@
-# Cyclistic Bike-Share Case Study: Converting Casual Riders into Annual Members
-
-Google Data Analytics Professional Certificate — Capstone Project
-
-A data analysis case study exploring how casual riders and annual members use Cyclistic's bike-share service differently, using SQL (BigQuery) for data cleaning/transformation and Data Studio for visualization — with the goal of informing a marketing strategy to convert casual riders into annual members.
-
----
-
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Business Task](#business-task)
-3. [Data](#data)
-4. [Processing and Cleaning](#processing-and-cleaning)
-5. [Analysis and Visualizations](#analysis-and-visualizations)
-6. [Conclusions and Recommendations](#conclusions-and-recommendations)
-7. [Tools Used](#tools-used)
-
----
+# Cyclistic Bike Share Case Study
 
 ## Introduction
 
-This project is part of the **Google Data Analytics Professional Certificate capstone**. The scenario involves analyzing trip data from Cyclistic, a fictional bike-share company operating in Chicago with around 6,000 bikes across 700 stations.
+This is a capstone project for the Google Data Analytics Professional Certificate. It follows the six steps from the course: Ask, Prepare, Process, Analyze, Share, and Act.
 
-Cyclistic offers two ways to ride:
-- **Casual riders** — single-ride and full-day passes
-- **Members** — annual subscriptions
+## Background
 
-The company's finance team has determined that annual members are significantly more profitable than casual riders. Cyclistic's marketing director believes that maximizing the number of annual members is key to future growth, and wants to design a marketing campaign aimed at converting casual riders into members — but the team first needs to understand how the two groups' usage patterns differ.
+Cyclistic is a bike-share company in Chicago. Riders can pick up a bike at one station and return it at any other. The company wants more annual members, so this project looks at how casual riders and members use the bikes differently.
 
 ## Business Task
 
-> **How do annual members and casual riders use Cyclistic bikes differently?**
+Find ways to convert casual riders into annual members.
 
-**Objective:** Clean, analyze, and visualize a year of ride data to identify behavioral differences between casual riders and annual members, and translate those differences into actionable marketing recommendations.
+## Data and Tools
 
-## Data
+- **Data:** [Divvy trip data](https://divvy-tripdata.s3.amazonaws.com/index.html), January to December 2022
+- **Cleaning and analysis:** SQL on Google BigQuery
+- **Visualization:** Tableau
 
-- **Source:** Public trip data from Motivate International Inc. (the Divvy bike-share system in Chicago), made available under [this license](https://www.divvybikes.com/data-license-agreement).
-- **Data range analyzed:** May 2020 – April 2021 (~608 MB across 12 monthly `.csv` files)
-- **Full historical archive:** Available [here](https://divvy-tripdata.s3.amazonaws.com/index.html) (2013–present)
-- **Granularity:** Each row is an individual ride, with start/end timestamps, station names, station IDs, latitude/longitude, bike type, and rider type (casual/member).
-- **Storage:** Raw monthly files were uploaded to Google Cloud Storage (GCS) to handle their size before import into BigQuery.
+## Process
 
-## Processing and Cleaning
+1. Combined 12 monthly tables into one (5,667,717 rows)
+2. Checked the data for missing values, outliers, and errors
+3. Cleaned the data:
+   - Removed rows with null values
+   - Added columns for ride length, day of week, and month
+   - Removed rides shorter than 1 minute or longer than 1 day
+4. Ended with 4,224,062 rows
 
-All processing was done in **BigQuery** using SQL.
+SQL files: [Combining](01_Data_Combining.sql), [Exploration](02_Data_Exploration.sql), [Cleaning](03_Data_Cleaning.sql), [Analysis](04_Data_Analysis.sql)
 
-- The 12 monthly files were imported from GCS and consolidated into a single view with consistent data types — see [`uncleaned_compile.sql`](./uncleaned_compile.sql).
-- Four calculated columns were added to support analysis:
-  - Start point location
-  - End point location
-  - Ride start day of week
-  - Ride duration (seconds)
-- The initial consolidated dataset returned **3,742,624 rows**, which then went through a cleaning pass.
+## Analysis
 
-**Cleaning steps:**
-| Check | Purpose | Query |
-|---|---|---|
-| Station check | Identify missing start/end station names | [`station_check.sql`](./station_check.sql) |
-| Column check | Validate other fields for nulls/inconsistencies | [`columns_check.sql`](./columns_check.sql) |
-| Duration check | Flag negative or zero-length rides | [`duration_check.sql`](./duration_check.sql) |
+### Total rides
+![Total Rides](images/total_rides.png)
 
-After removing invalid and incomplete records, **3,476,354 rows** remained for analysis. The full cleaning-and-consolidation logic — including `JOIN`, `WITH`, `UNION ALL`, `WHERE`, and subqueries — is combined in a single master query: [`single_query.sql`](./single_query.sql).
+Members took 59.4% of rides and casual riders took 40.6%.
 
-## Analysis and Visualizations
+### Bike types
+![Bike Types](images/bike_types.png)
 
-The cleaned dataset (~3.4M rides) was visualized in **Google Data Studio** to compare casual riders and members across several dimensions.
+Both groups prefer classic bikes. Only casual riders used docked bikes.
 
-### 1. Total Ride Share
-- **58.6%** of rides were taken by annual members; **41.4%** by casual riders.
-- Members represent the majority of ride volume, reinforcing their importance to long-term growth.
+### Average ride length
+![Average Ride Length](images/avg_ride_length.png)
 
-### 2. Weekly Distribution of Rides
-- Casual ridership **peaks sharply on weekends**, while member ridership stays relatively flat across the week.
-- Casual ridership is roughly **50% lower on weekdays** than on weekends — consistent with leisure use rather than commuting.
+Members ride for 12.41 minutes on average. Casual riders ride for 23.82 minutes.
 
-### 3. Weekly Distribution of Average Ride Duration
-- Casual riders' average ride duration is about **3x longer** than members'.
-- Both groups' average durations increase on weekends, but the gap remains wide.
+### Rides per month
+![Rides per Month](images/rides_per_month.png)
 
-### 4. Ride Duration vs. Ride Distance
-- Both rider types travel a **similar average distance** per ride.
-- Despite similar distances, casual riders take **~3x longer**, suggesting more leisurely, less direct riding.
+Both groups ride most in summer and least in January.
 
-### 5. Hourly Distribution of Rides
-- Casual riders' share jumps from **18%** during commute hours to as much as **50%** during late-morning and evening (post-8pm) hours.
-- Members make up **up to 82%** of rides during typical morning/evening commute windows.
+### Rides per weekday
+![Rides per Weekday](images/rides_per_weekday.png)
 
-### 6. Monthly Distribution — Seasonality
-- Casual ridership drops to about **20%** of total rides during winter (Dec–Feb).
-- Casual ridership peaks at about **40%** during summer months (June–September).
+Members ride steadily through the week. Casual riders ride mostly on weekends.
 
-*Visualizations to be added once finalized in Data Studio.*
+## Dashboard
 
-## Conclusions and Recommendations
+![Dashboard](images/dashboard.png)
 
-**Key insight:** Casual riders predominantly use Cyclistic bikes for **leisure and tourism**, while annual members use them primarily for **commuting**. This is evident from casual riders' weekend concentration, longer ride durations at similar distances, off-peak hourly usage, and strong summer seasonality.
+[View the interactive dashboard on Tableau](https://public.tableau.com/app/profile/hui.min.ho/viz/CyclisticBikeShareCaseStudy_16931448059910/Sheet1#2)
 
-**Recommendations:**
-1. **Target leisure locations** — Run on-the-ground marketing campaigns near parks, tourist attractions, restaurants, and entertainment venues where casual riders are concentrated.
-2. **Weekday incentives** — Offer discounted weekday passes or bundles to nudge casual riders toward using bikes for commuting, building the habit that leads to membership.
-3. **Off-peak engagement** — Use push notifications or in-app promotions during the late-morning and evening leisure windows when casual ridership is highest.
-4. **Seasonal campaigns** — Launch a winter-specific promotion (e.g., tied to the holiday season) to offset the steep seasonal drop-off in casual ridership and keep the conversion funnel active year-round.
+## Key Findings
 
-## Tools Used
+- Both groups ride more from May to September.
+- Both groups prefer classic bikes.
+- Members take short, regular trips, likely for work or errands.
+- Casual riders take longer trips, mostly on weekends, likely for fun.
 
-- **Google BigQuery** — data storage, SQL-based cleaning and transformation
-- **Google Cloud Storage** — staging for large raw CSV files
-- **Google Data Studio (Looker Studio)** — visualization and dashboarding
-- **SQL** — `JOIN`, `WITH`, `UNION ALL`, `WHERE`, subqueries, and aggregate functions
+## Recommendations
 
----
+- **Flexible plans:** Offer monthly and daily memberships, not just yearly.
+- **Loyalty points:** Reward riders with points for every ride.
+- **Member events:** Hold events that only members can join.
+- **Seasonal offers:** Run discounts in the busy spring and summer months.
+- **Social media:** Share member stories and photos to attract casual riders.
 
-*This is a fictional case study completed as part of the Google Data Analytics Professional Certificate. Data is provided by Motivate International Inc. under their public [data license agreement](https://www.divvybikes.com/data-license-agreement).*
+## Conclusion
+
+Members ride often for short trips, while casual riders ride less often for longer, mostly on weekends. Marketing that fits these habits can help turn casual riders into members.
+
+## 👨‍💻 About the Author
+
+**Surajkumar Bevnale**
+Data Analyst | SQL • Excel • Power BI • Python
+B.Tech, Engineering Physics, IIT Ropar (2023–2027)
+
+- 📫 Reach me at: surajk.b168@gmail.com
+- 🔗 LinkedIn: [Surajkumar B](https://www.linkedin.com/in/skb168/)

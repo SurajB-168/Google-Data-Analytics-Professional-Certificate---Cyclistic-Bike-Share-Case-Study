@@ -33,35 +33,43 @@ SQL files: [Combining](01_Data_Combining.sql), [Exploration](02_Data_Exploration
 ## Analysis
 
 ### Total rides
-![Total Rides](images/total_rides.png)
+![Total Rides](images/Membership%20Types.png)
 
 Members took 59.4% of rides and casual riders took 40.6%.
 
 ### Bike types
-![Bike Types](images/bike_types.png)
+![Bike Types](images/Types%20of%20Bikes.png)
 
 Both groups prefer classic bikes. Only casual riders used docked bikes.
 
 ### Average ride length
-![Average Ride Length](images/avg_ride_length.png)
+![Average Ride Length](images/Avg%20Ride%20Length%20%28Year%29.png)
 
 Members ride for 12.41 minutes on average. Casual riders ride for 23.82 minutes.
 
 ### Rides per month
-![Rides per Month](images/rides_per_month.png)
+![Rides per Month](images/Total%20Rides%20%28Month%29.png)
 
 Both groups ride most in summer and least in January.
 
+### Average ride length per month
+![Average Ride Length per Month](images/Avg.%20Ride%20Length%20%28Month%29.png)
+
+Casual riders take much longer rides than members in every month.
+
 ### Rides per weekday
-![Rides per Weekday](images/rides_per_weekday.png)
+![Rides per Weekday](images/Total%20Rides%20%28Week%29.png)
 
 Members ride steadily through the week. Casual riders ride mostly on weekends.
 
+### Average ride length per weekday
+![Average Ride Length per Weekday](images/Avg.%20Ride%20Length%20%28Week%29.png)
+
+Both groups take longer rides on weekends.
+
 ## Dashboard
 
-![Dashboard](images/dashboard.png)
-
-[View the interactive dashboard on Tableau](https://public.tableau.com/app/profile/hui.min.ho/viz/CyclisticBikeShareCaseStudy_16931448059910/Sheet1#2)
+![Dashboard](images/Cyclistic%20Bike%20Share%20Dashboard.png)
 
 ## Key Findings
 
@@ -81,6 +89,7 @@ Members ride steadily through the week. Casual riders ride mostly on weekends.
 ## Conclusion
 
 Members ride often for short trips, while casual riders ride less often for longer, mostly on weekends. Marketing that fits these habits can help turn casual riders into members.
+
 
 ## 👨‍💻 About the Author
 
